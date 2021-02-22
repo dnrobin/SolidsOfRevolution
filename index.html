@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" media="screen" href="css/style.css">
+		<script src="js/detector.js"></script>
+		<script src="js/requestAnimationFrame.js"></script>
+		<script src="js/lib/three/three.min.js"></script>
+		<script src="js/lib/three/controls/TrackballControls.js"></script>
+	</head>
+	<body>
+		<script>
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+			
+			var scene, renderer, controls, camera;
+			
+			init();
+			
+			function init() {
+				
+				renderer = new THREE.WebGLRenderer({ antialias:true });
+				
+				var aspect = window.innerWidth/window.innerHeight, factor = 1;
+				renderer.setSize(window.innerWidth*factor, window.innerWidth*factor/aspect);
+				var container = document.body.appendChild(renderer.domElement);
+				
+				camera = new THREE.PerspectiveCamera(90,window.innerWidth/window.innerHeight,1,100);
+				camera.position.set(0,0,3);
+				camera.rotation.set(0,0,0);
+				
+				controls = new THREE.TrackballControls( camera, container );
+				controls.minDistance = 2;
+				controls.maxDistance = 10;
+				controls.rotateSpeed = 1;
+				controls.zoomSpeed = 0.2;
+				controls.noPan = false;
+				controls.noZoom = false;
+				controls.staticMoving = true;
+				controls.dynamicDampingFactor = 1;
+				controls.keys = [65, 83, 68];
+				
+				scene = new THREE.Scene;
+				
+				scene.add( new THREE.AmbientLight(16777215, 1) );
+				var directionalLight = new THREE.DirectionalLight(16777215, 0.3);
+				directionalLight.position.set(0, 10, 0);
+				scene.add( directionalLight.clone() );
+				
+				scene.add( new THREE.Sphere(2) );
+				
+				window.addEventListener("resize",function(){
+					renderer.setSize(window.innerWidth,window.innerHeight);
+					camera.aspect = window.innerWidth/window.innerHeight;
+					camera.updateProjectionMatrix()
+				});
+				
+				renderer.render(scene, camera);
+				
+				animate();
+			}
+			
+			function animate() {
+				requestAnimationFrame(animate);
+				renderer.render(scene, camera);
+			}
+			
+		</script>
+	</body>
+</html>
